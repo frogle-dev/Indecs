@@ -1,23 +1,6 @@
 {
-  "date": "2026-10-18T13:30:47.410693443-07:00",
+  "date": "2026-10-18T13:38:33.975320041-07:00",
   "data": {
-    "CMAKE_C_STANDARD_REQUIRED": {
-      "location": {
-        "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
-        "range": {
-          "start": {
-            "line": 4,
-            "character": 4
-          },
-          "end": {
-            "line": 4,
-            "character": 29
-          }
-        }
-      },
-      "document_info": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt",
-      "is_function": false
-    },
     "CMAKE_C_STANDARD": {
       "location": {
         "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
@@ -29,23 +12,6 @@
           "end": {
             "line": 3,
             "character": 20
-          }
-        }
-      },
-      "document_info": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt",
-      "is_function": false
-    },
-    "CMAKE_BUILD_TYPE": {
-      "location": {
-        "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
-        "range": {
-          "start": {
-            "line": 9,
-            "character": 8
-          },
-          "end": {
-            "line": 9,
-            "character": 24
           }
         }
       },
@@ -80,6 +46,40 @@
           "end": {
             "line": 5,
             "character": 22
+          }
+        }
+      },
+      "document_info": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt",
+      "is_function": false
+    },
+    "CMAKE_BUILD_TYPE": {
+      "location": {
+        "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
+        "range": {
+          "start": {
+            "line": 9,
+            "character": 8
+          },
+          "end": {
+            "line": 9,
+            "character": 24
+          }
+        }
+      },
+      "document_info": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt",
+      "is_function": false
+    },
+    "CMAKE_C_STANDARD_REQUIRED": {
+      "location": {
+        "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
+        "range": {
+          "start": {
+            "line": 4,
+            "character": 4
+          },
+          "end": {
+            "line": 4,
+            "character": 29
           }
         }
       },

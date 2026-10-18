@@ -28,6 +28,8 @@
             gdb
 
             lua5_4
+            lua-language-server
+            stylua
           ];
 
           hardeningDisable = [ "fortify" ];
