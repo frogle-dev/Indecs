@@ -1,2 +1,2 @@
 # Indecs
-Tiny but mighty compile time ECS made in C
+Tiny but mighty compile time archetype ECS made in C
