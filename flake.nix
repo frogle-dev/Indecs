@@ -20,23 +20,14 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        devShells.default = pkgs.mkShell {
+        devShells.default = pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } {
           nativeBuildInputs = with pkgs; [
-            clang
             clang-tools
-
             cmake
-            ninja
-            gnumake
-            pkg-config
 
             gdb
-            lldb
-            valgrind
-            rr
 
-            cppcheck
-
+            lua5_4
           ];
 
           hardeningDisable = [ "fortify" ];
