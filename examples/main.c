@@ -1,53 +1,76 @@
+#include <assert.h>
 #include <indecs.h>
 #include <stdio.h>
 
+#include <stdlib.h>
+#include <time.h>
+
 int main(void) {
+  srand(time(NULL));
+
   ecs_World world = ecs_new_world();
 
-  ecs_spawn(&world, ((A_Pos){.pos = (Position){
-                                 .x = 50,
-                                 .y = 10,
-                             }}));
+  for (size_t i = 0; i < 10; i++) {
+    int x1 = rand();
+    int y1 = rand();
 
-  ecs_spawn(&world, ((A_PosVel){.pos =
-                                    (Position){
-                                        .x = 2113,
-                                        .y = 212.5,
-                                    },
-                                .vel = (Velocity){
-                                    .vx = 100,
-                                    .vy = 54.123,
-                                }}));
+    int x2 = rand();
+    int y2 = rand();
+    int vx2 = rand();
+    int vy2 = rand();
 
-  ecs_spawn(&world, ((A_PosVelAcc){.pos =
-                                       (Position){
-                                           .x = 78,
-                                           .y = 91,
-                                       },
-                                   .vel =
-                                       (Velocity){
-                                           .vx = 12.74,
-                                           .vy = 978.3,
-                                       },
-                                   .acc = (Acceleration){
-                                       .ax = 12.2,
-                                       .ay = 2.3,
-                                   }}));
+    int x3 = rand();
+    int y3 = rand();
+    int vx3 = rand();
+    int vy3 = rand();
+    int ax3 = rand();
+    int ay3 = rand();
 
-  printf("%f == %f\n", world.position.position[0].x, 50.0);
-  printf("%f == %f\n", world.position.position[0].y, 10.0);
+    ecs_spawn(&world, ((A_Pos){.pos = (Position){
+                                   .x = x1,
+                                   .y = y1,
+                               }}));
 
-  printf("%f == %f\n", world.position_velocity.position[0].x, 2113.0);
-  printf("%f == %f\n", world.position_velocity.position[0].y, 212.5);
-  printf("%f == %f\n", world.position_velocity.velocity[0].vx, 100.0);
-  printf("%f == %f\n", world.position_velocity.velocity[0].vy, 54.123);
+    ecs_spawn(&world, ((A_PosVel){.pos =
+                                      (Position){
+                                          .x = x2,
+                                          .y = y2,
+                                      },
+                                  .vel = (Velocity){
+                                      .vx = vx2,
+                                      .vy = vy2,
+                                  }}));
 
-  printf("%f == %f\n", world.position_velocity_acceleration.position[0].x, 78.0);
-  printf("%f == %f\n", world.position_velocity_acceleration.position[0].y, 91.0);
-  printf("%f == %f\n", world.position_velocity_acceleration.velocity[0].vx, 12.74);
-  printf("%f == %f\n", world.position_velocity_acceleration.velocity[0].vy, 978.3);
-  printf("%f == %f\n", world.position_velocity_acceleration.acceleration[0].ax, 12.2);
-  printf("%f == %f\n", world.position_velocity_acceleration.acceleration[0].ay, 2.3);
+    ecs_spawn(&world, ((A_PosVelAcc){.pos =
+                                         (Position){
+                                             .x = x3,
+                                             .y = y3,
+                                         },
+                                     .vel =
+                                         (Velocity){
+                                             .vx = vx3,
+                                             .vy = vy3,
+                                         },
+                                     .acc = (Acceleration){
+                                         .ax = ax3,
+                                         .ay = ay3,
+                                     }}));
+
+    assert(world.position.position[i].x == x1);
+    assert(world.position.position[i].y == y1);
+
+    assert(world.position_velocity.position[i].x == x2);
+    assert(world.position_velocity.position[i].y == y2);
+    assert(world.position_velocity.velocity[i].vx == vx2);
+    assert(world.position_velocity.velocity[i].vy == vy2);
+
+    assert(world.position_velocity_acceleration.position[i].x == x3);
+    assert(world.position_velocity_acceleration.position[i].y == y3);
+    assert(world.position_velocity_acceleration.velocity[i].vx == vx3);
+    assert(world.position_velocity_acceleration.velocity[i].vy == vy3);
+    assert(world.position_velocity_acceleration.acceleration[i].ax == ax3);
+    assert(world.position_velocity_acceleration.acceleration[i].ay == ay3);
+  }
 
   ecs_destroy_world(&world);
 
