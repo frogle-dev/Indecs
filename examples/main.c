@@ -10,7 +10,9 @@ int main(void) {
 
   ecs_World world = ecs_new_world();
 
-  for (size_t i = 0; i < 10; i++) {
+  clock_t start = clock();
+
+  for (size_t i = 0; i < 1000; i++) {
     int x1 = rand();
     int y1 = rand();
 
@@ -26,35 +28,20 @@ int main(void) {
     int ax3 = rand();
     int ay3 = rand();
 
-    ecs_spawn(&world, ((A_Pos){.pos = (Position){
-                                   .x = x1,
-                                   .y = y1,
-                               }}));
+    ecs_spawn(&world, ((A_Pos){
+                          .pos = {.x = x1, .y = y1},
+                      }));
 
-    ecs_spawn(&world, ((A_PosVel){.pos =
-                                      (Position){
-                                          .x = x2,
-                                          .y = y2,
-                                      },
-                                  .vel = (Velocity){
-                                      .vx = vx2,
-                                      .vy = vy2,
-                                  }}));
+    ecs_spawn(&world, ((A_PosVel){
+                          .pos = {.x = x2, .y = y2},
+                          .vel = {.vx = vx2, .vy = vy2},
+                      }));
 
-    ecs_spawn(&world, ((A_PosVelAcc){.pos =
-                                         (Position){
-                                             .x = x3,
-                                             .y = y3,
-                                         },
-                                     .vel =
-                                         (Velocity){
-                                             .vx = vx3,
-                                             .vy = vy3,
-                                         },
-                                     .acc = (Acceleration){
-                                         .ax = ax3,
-                                         .ay = ay3,
-                                     }}));
+    ecs_spawn(&world, ((A_PosVelAcc){
+                          .pos = {.x = x3, .y = y3},
+                          .vel = {.vx = vx3, .vy = vy3},
+                          .acc = {.ax = ax3, .ay = ay3},
+                      }));
 
     assert(world.position.position[i].x == x1);
     assert(world.position.position[i].y == y1);
@@ -71,6 +58,9 @@ int main(void) {
     assert(world.position_velocity_acceleration.acceleration[i].ax == ax3);
     assert(world.position_velocity_acceleration.acceleration[i].ay == ay3);
   }
+
+  clock_t end = clock();
+  printf("took: %f seconds", (double)(end - start) / CLOCKS_PER_SEC);
 
   ecs_destroy_world(&world);
 

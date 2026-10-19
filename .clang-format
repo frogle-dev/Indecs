@@ -1,5 +1,18 @@
 BasedOnStyle: LLVM
-ColumnLimit: 100
-# BinPackParameters: false
+# IndentWidth: 2
+# ColumnLimit: 80
+#
+# # --- Fix 1: Stop macro backslashes from jumping to the far right ---
+# AlignEscapedNewlines: Left
+#
+# # --- Fix 2: Prevent weird return type line breaks ---
+# AlwaysBreakAfterReturnType: None
+#
+# # --- Fix 3: Stop horizontal pointer/argument stacking alignment ---
 # AlignAfterOpenBracket: BlockIndent
-# BreakConstructorInitializersBeforeComma: true
+# BinPackArguments: false
+# BinPackParameters: false
+# AllowAllArgumentsOnNextLine: false
+#
+# # --- Fix 4: Keep macros and initializers tightly packed ---
+# Cpp11BracedListStyle: true

@@ -27,6 +27,7 @@
             llvm
 
             gdb
+            valgrind
 
             lua5_4
             lua-language-server
