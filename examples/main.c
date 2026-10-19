@@ -43,7 +43,7 @@ int main(void) {
   printf("%f == %f\n", world.position_velocity.velocity[0].vy, 54.123);
 
   printf("%f == %f\n", world.position_velocity_acceleration.position[0].x, 78.0);
-  printf("%f == %f\n", world.position_velocity_acceleration.position[0].x, 91.0);
+  printf("%f == %f\n", world.position_velocity_acceleration.position[0].y, 91.0);
   printf("%f == %f\n", world.position_velocity_acceleration.velocity[0].vx, 12.74);
   printf("%f == %f\n", world.position_velocity_acceleration.velocity[0].vy, 978.3);
   printf("%f == %f\n", world.position_velocity_acceleration.acceleration[0].ax, 12.2);

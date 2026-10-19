@@ -57,10 +57,10 @@ typedef struct {
 } Archetype_Position_Velocity_Acceleration;
 
 typedef enum {
-  NONE,
-  POSITION,
-  POSITION_VELOCITY,
-  POSITION_VELOCITY_ACCELERATION,
+  ECS_ARCHETYPE_NONE,
+  ECS_ARCHETYPE_POSITION,
+  ECS_ARCHETYPE_POSITION_VELOCITY,
+  ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION,
 } ArchetypeID;
 
 typedef struct {
@@ -88,7 +88,7 @@ typedef struct {
 ///// WORLD
 
 typedef struct {
-  uint32_t next_available_entity_id;
+  EntityID next_available_entity_id;
 
   Archetype_Position position;
   Archetype_Position_Velocity position_velocity;
