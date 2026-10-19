@@ -27,8 +27,7 @@ typedef struct {
 // archetypes are SOA arraylists
 
 typedef struct {
-  // indexed by EntityID
-  size_t *entities;
+  EntityID *entities;
 
   Position *position;
 
@@ -37,8 +36,7 @@ typedef struct {
 } Archetype_Position;
 
 typedef struct {
-  // indexed by EntityID
-  size_t *entities;
+  EntityID *entities;
 
   Position *position;
   Velocity *velocity;
@@ -48,8 +46,7 @@ typedef struct {
 } Archetype_Position_Velocity;
 
 typedef struct {
-  // indexed by EntityID
-  size_t *entities;
+  EntityID *entities;
 
   Position *position;
   Velocity *velocity;
@@ -106,17 +103,14 @@ typedef struct {
 ecs_World ecs_new_world(void);
 void ecs_destroy_world(ecs_World *world);
 
-#define ecs_spawn(world, Archetype)                                            \
-  _Generic((world, Archetype),                                                 \
-      A_Pos: ecs_archetype_position_spawn,                                     \
-      A_PosVel: ecs_archetype_position_velocity_spawn,                         \
-      A_PosVelAcc: ecs_archetype_position_velocity_acceleration_spawn)(        \
-      world, Archetype)
+#define ecs_spawn(world, Archetype)                                                                \
+  _Generic((Archetype),                                                                            \
+      A_Pos: ecs_archetype_position_spawn,                                                         \
+      A_PosVel: ecs_archetype_position_velocity_spawn,                                             \
+      A_PosVelAcc: ecs_archetype_position_velocity_acceleration_spawn)(world, Archetype)
 
 EntityID ecs_archetype_position_spawn(ecs_World *world, A_Pos archetype);
-EntityID ecs_archetype_position_velocity_spawn(ecs_World *world,
-                                               A_PosVel archetype);
-EntityID
-ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
-                                                   A_PosVelAcc archetype);
+EntityID ecs_archetype_position_velocity_spawn(ecs_World *world, A_PosVel archetype);
+EntityID ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
+                                                            A_PosVelAcc archetype);
 bool ecs_despawn(ecs_World *world, EntityID entity_id);

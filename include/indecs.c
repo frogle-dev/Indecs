@@ -25,53 +25,105 @@ void ecs_destroy_world(ecs_World *world) {
   free(world->position_velocity_acceleration.entities);
 }
 
-EntityID ecs_archetype_position_spawn(ecs_World *world, A_Pos archetype) {
-  size_t size = world->position.size;
+EntityID *realloc_entities(EntityID *entities, size_t new_cap) {
+  EntityID *new_entities = (EntityID *)realloc(entities, new_cap * sizeof(size_t));
 
-  if (size >= world->position.capacity) {
-    size_t new_cap = 0;
-    if (world->position.capacity == 0)
-      new_cap = 1;
-    else
-      new_cap = world->position.capacity * 2;
-
-    world->position.capacity = new_cap;
-
-    Position *new_positions = (Position *)realloc(world->position.position,
-                                                  new_cap * sizeof(Position));
-    if (new_positions == NULL) {
-      printf("New positions is null\n");
-      exit(EXIT_FAILURE);
-    }
-
-    size_t *new_entities =
-        (size_t *)realloc(world->position.entities, new_cap * sizeof(size_t));
-
-    if (new_entities == NULL) {
-      printf("New entities is null\n");
-      exit(EXIT_FAILURE);
-    }
-
-    world->position.position = new_positions;
-    world->position.entities = new_entities;
+  if (new_entities == NULL) {
+    printf("New entities is null\n");
+    exit(EXIT_FAILURE);
   }
 
-  world->position.position[size] = archetype.pos;
-  world->position.entities[world->next_available_entity_id] = size;
+  return new_entities;
+}
 
-  uint32_t id = world->next_available_entity_id;
+void *realloc_components(void *components, size_t component_size, size_t new_cap) {
+  void *new_components = realloc(components, new_cap * component_size);
+
+  if (new_components == NULL) {
+    printf("New components is null\n");
+    exit(EXIT_FAILURE);
+  }
+
+  return new_components;
+}
+
+EntityID add_entity(ecs_World *world, EntityID *entities, size_t row) {
+  entities[row] = world->next_available_entity_id;
+
+  EntityID id = world->next_available_entity_id;
 
   world->next_available_entity_id++;
-  world->position.size++;
+
   return id;
 }
 
-// EntityID ecs_archetype_position_velocity_spawn(ecs_World *world,
-//                                                Position position,
-//                                                Velocity velocity);
-//
-// EntityID ecs_archetype_position_velocity_acceleration_spawn(
-//     ecs_World *world, Position position, Velocity velocity,
-//     Acceleration acceleration);
+bool should_grow_arraylist(size_t size, size_t *capacity) {
+  if (size >= *capacity) {
+    size_t new_cap = 0;
+    if (*capacity == 0)
+      new_cap = 1;
+    else
+      new_cap = (*capacity) * 2;
+
+    *capacity = new_cap;
+
+    return true;
+  }
+
+  return false;
+}
+
+EntityID ecs_archetype_position_spawn(ecs_World *world, A_Pos entity_data) {
+  Archetype_Position *a = &world->position;
+
+  if (should_grow_arraylist(a->size, &a->capacity)) {
+    a->position = (Position *)realloc_components(a->position, sizeof(Position), a->capacity);
+
+    a->entities = realloc_entities(a->entities, a->capacity);
+  }
+
+  a->position[a->size] = entity_data.pos;
+  a->size++;
+
+  return add_entity(world, a->entities, a->size);
+}
+
+EntityID ecs_archetype_position_velocity_spawn(ecs_World *world, A_PosVel entity_data) {
+  Archetype_Position_Velocity *a = &world->position_velocity;
+
+  if (should_grow_arraylist(a->size, &a->capacity)) {
+    a->position = (Position *)realloc_components(a->position, sizeof(Position), a->capacity);
+    a->velocity = (Velocity *)realloc_components(a->velocity, sizeof(Velocity), a->capacity);
+
+    a->entities = realloc_entities(a->entities, a->capacity);
+  }
+
+  a->position[a->size] = entity_data.pos;
+  a->velocity[a->size] = entity_data.vel;
+  a->size++;
+
+  return add_entity(world, a->entities, a->size);
+}
+
+EntityID ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
+                                                            A_PosVelAcc entity_data) {
+  Archetype_Position_Velocity_Acceleration *a = &world->position_velocity_acceleration;
+
+  if (should_grow_arraylist(a->size, &a->capacity)) {
+    a->position = (Position *)realloc_components(a->position, sizeof(Position), a->capacity);
+    a->velocity = (Velocity *)realloc_components(a->velocity, sizeof(Velocity), a->capacity);
+    a->acceleration =
+        (Acceleration *)realloc_components(a->acceleration, sizeof(Acceleration), a->capacity);
+
+    a->entities = realloc_entities(a->entities, a->capacity);
+  }
+
+  a->position[a->size] = entity_data.pos;
+  a->velocity[a->size] = entity_data.vel;
+  a->acceleration[a->size] = entity_data.acc;
+  a->size++;
+
+  return add_entity(world, a->entities, a->size);
+}
 
 bool ecs_despawn(ecs_World *world, EntityID entity_id);

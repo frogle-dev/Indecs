@@ -1,5 +1,5 @@
 BasedOnStyle: LLVM
-# ColumnLimit: 50
+ColumnLimit: 100
 # BinPackParameters: false
 # AlignAfterOpenBracket: BlockIndent
 # BreakConstructorInitializersBeforeComma: true
