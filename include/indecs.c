@@ -26,7 +26,7 @@ void ecs_destroy_world(ecs_World *world) {
 }
 
 EntityID *realloc_entities(EntityID *entities, size_t new_cap) {
-  EntityID *new_entities = (EntityID *)realloc(entities, new_cap * sizeof(size_t));
+  EntityID *new_entities = (EntityID *)realloc(entities, new_cap * sizeof(EntityID));
 
   if (new_entities == NULL) {
     printf("New entities is null\n");
@@ -47,12 +47,14 @@ void *realloc_components(void *components, size_t component_size, size_t new_cap
   return new_components;
 }
 
-EntityID add_entity(ecs_World *world, EntityID *entities, size_t row) {
-  entities[row] = world->next_available_entity_id;
+EntityID add_entity(ecs_World *world, EntityID *entities, size_t *row) {
+  entities[*row] = world->next_available_entity_id;
 
   EntityID id = world->next_available_entity_id;
 
   world->next_available_entity_id++;
+
+  (*row)++;
 
   return id;
 }
@@ -83,9 +85,8 @@ EntityID ecs_archetype_position_spawn(ecs_World *world, A_Pos entity_data) {
   }
 
   a->position[a->size] = entity_data.pos;
-  a->size++;
 
-  return add_entity(world, a->entities, a->size);
+  return add_entity(world, a->entities, &a->size);
 }
 
 EntityID ecs_archetype_position_velocity_spawn(ecs_World *world, A_PosVel entity_data) {
@@ -100,9 +101,8 @@ EntityID ecs_archetype_position_velocity_spawn(ecs_World *world, A_PosVel entity
 
   a->position[a->size] = entity_data.pos;
   a->velocity[a->size] = entity_data.vel;
-  a->size++;
 
-  return add_entity(world, a->entities, a->size);
+  return add_entity(world, a->entities, &a->size);
 }
 
 EntityID ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
@@ -121,9 +121,8 @@ EntityID ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
   a->position[a->size] = entity_data.pos;
   a->velocity[a->size] = entity_data.vel;
   a->acceleration[a->size] = entity_data.acc;
-  a->size++;
 
-  return add_entity(world, a->entities, a->size);
+  return add_entity(world, a->entities, &a->size);
 }
 
 bool ecs_despawn(ecs_World *world, EntityID entity_id);
