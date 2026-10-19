@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-18T13:38:33.975280892-07:00",
+  "date": "2026-10-18T15:29:39.954421418-07:00",
   "data": {
     "/home/jonah/Programming/C/Indecs/CMakeLists.txt": [
       {
@@ -25,6 +25,12 @@
         "kind": 12,
         "detail": "Value",
         "documentation": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt"
+      },
+      {
+        "label": "CMAKE_C_STANDARD_INCLUDE_DIRECTORIES",
+        "kind": 12,
+        "detail": "Value",
+        "documentation": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt\n\nhelps on nixos where clangd cant find C headers"
       },
       {
         "label": "CMAKE_BUILD_TYPE",

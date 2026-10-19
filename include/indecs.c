@@ -25,7 +25,7 @@ void ecs_destroy_world(ecs_World *world) {
   free(world->position_velocity_acceleration.entities);
 }
 
-EntityID ecs_archetype_position_spawn(ecs_World *world, Position position) {
+EntityID ecs_archetype_position_spawn(ecs_World *world, A_Pos archetype) {
   size_t size = world->position.size;
 
   if (size >= world->position.capacity) {
@@ -44,8 +44,9 @@ EntityID ecs_archetype_position_spawn(ecs_World *world, Position position) {
       exit(EXIT_FAILURE);
     }
 
-    EntityID *new_entities = (EntityID *)realloc(world->position.entities,
-                                                 new_cap * sizeof(EntityID));
+    size_t *new_entities =
+        (size_t *)realloc(world->position.entities, new_cap * sizeof(size_t));
+
     if (new_entities == NULL) {
       printf("New entities is null\n");
       exit(EXIT_FAILURE);
@@ -55,8 +56,8 @@ EntityID ecs_archetype_position_spawn(ecs_World *world, Position position) {
     world->position.entities = new_entities;
   }
 
-  world->position.position[size] = position;
-  world->position.entities[size] = world->next_available_entity_id;
+  world->position.position[size] = archetype.pos;
+  world->position.entities[world->next_available_entity_id] = size;
 
   uint32_t id = world->next_available_entity_id;
 
@@ -65,12 +66,12 @@ EntityID ecs_archetype_position_spawn(ecs_World *world, Position position) {
   return id;
 }
 
-EntityID ecs_archetype_position_velocity_spawn(ecs_World *world,
-                                               Position position,
-                                               Velocity velocity);
-
-EntityID ecs_archetype_position_velocity_acceleration_spawn(
-    ecs_World *world, Position position, Velocity velocity,
-    Acceleration acceleration);
+// EntityID ecs_archetype_position_velocity_spawn(ecs_World *world,
+//                                                Position position,
+//                                                Velocity velocity);
+//
+// EntityID ecs_archetype_position_velocity_acceleration_spawn(
+//     ecs_World *world, Position position, Velocity velocity,
+//     Acceleration acceleration);
 
 bool ecs_despawn(ecs_World *world, EntityID entity_id);

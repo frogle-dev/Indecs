@@ -24,6 +24,7 @@
           nativeBuildInputs = with pkgs; [
             clang-tools
             cmake
+            llvm
 
             gdb
 
