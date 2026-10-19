@@ -1,17 +1,17 @@
 {
-  "date": "2026-10-18T20:26:21.193539845-07:00",
+  "date": "2026-10-19T16:15:36.186790294-07:00",
   "data": {
-    "CMAKE_C_EXTENSIONS": {
+    "CMAKE_C_STANDARD_REQUIRED": {
       "location": {
         "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
         "range": {
           "start": {
-            "line": 5,
+            "line": 4,
             "character": 4
           },
           "end": {
-            "line": 5,
-            "character": 22
+            "line": 4,
+            "character": 29
           }
         }
       },
@@ -35,17 +35,17 @@
       "document_info": "defined variable\nfrom: /home/jonah/Programming/C/Indecs/CMakeLists.txt",
       "is_function": false
     },
-    "CMAKE_C_STANDARD_REQUIRED": {
+    "CMAKE_C_EXTENSIONS": {
       "location": {
         "uri": "file:///home/jonah/Programming/C/Indecs/CMakeLists.txt",
         "range": {
           "start": {
-            "line": 4,
+            "line": 5,
             "character": 4
           },
           "end": {
-            "line": 4,
-            "character": 29
+            "line": 5,
+            "character": 22
           }
         }
       },

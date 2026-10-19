@@ -65,7 +65,7 @@ typedef enum {
 
 typedef struct {
   ArchetypeID archetype;
-  size_t entity_row;
+  size_t row;
 } EntityLocation;
 
 ///// EXTERNAL ARCHETYPES

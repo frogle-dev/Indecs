@@ -1,6 +1,5 @@
 #include <indecs.h>
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -76,7 +75,7 @@ static void add_entity_location(ecs_World *world, ArchetypeID archetype_id,
 
   EntityLocation loc = {
       .archetype = archetype_id,
-      .entity_row = row,
+      .row = row,
   };
 
   world->entity_locations[id] = loc;
@@ -85,16 +84,18 @@ static void add_entity_location(ecs_World *world, ArchetypeID archetype_id,
 }
 
 static EntityID add_entity(ecs_World *world, ArchetypeID archetype_id,
-                           EntityID *entities, size_t *row) {
-  entities[*row] = world->next_available_entity_id;
+                           EntityID *entities, size_t *size) {
+  (*size)++;
+
+  const size_t row = (*size) - 1;
+
+  entities[row] = world->next_available_entity_id;
 
   EntityID id = world->next_available_entity_id;
 
   world->next_available_entity_id++;
 
-  (*row)++;
-
-  add_entity_location(world, archetype_id, id, (*row));
+  add_entity_location(world, archetype_id, id, row);
 
   return id;
 }
@@ -175,13 +176,50 @@ ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
                     a->entities, &a->size);
 }
 
+static const EntityLocation DEAD_LOC = {
+    .archetype = ECS_ARCHETYPE_NONE,
+    .row = 0, // doesnt matter
+};
+
 bool ecs_despawn(ecs_World *world, EntityID entity_id) {
+  if (entity_id >= world->locs_size)
+    return false;
+
   EntityLocation loc = world->entity_locations[entity_id];
 
+  // swap the last entity into the despawning entity's row
+  // and decrement the size of the heap array
+  // 123456789
+  //    ^
+  // 12395678
+  //    ^    x
+
   switch (loc.archetype) {
-  case ECS_ARCHETYPE_POSITION:
+  case ECS_ARCHETYPE_POSITION:;
+    Archetype_Position *a = &world->position;
+
+    size_t last_row_idx = a->size - 1;
+
+    a->entities[loc.row] = a->entities[last_row_idx];
+    a->position[loc.row] = a->position[last_row_idx];
+
+    // update the swapped entity's location to point at its new memory location
+    world->entity_locations[a->entities[loc.row]] = loc;
+
+    world->entity_locations[entity_id] = DEAD_LOC;
+
+    a->size--;
+    break;
+
   case ECS_ARCHETYPE_POSITION_VELOCITY:
+    break;
+
   case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION:
+    break;
+
   case ECS_ARCHETYPE_NONE:
+    return false;
   };
+
+  return true;
 }

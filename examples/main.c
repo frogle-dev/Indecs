@@ -1,68 +1,22 @@
-#include <assert.h>
-#include <indecs.h>
 #include <stdio.h>
 
-#include <stdlib.h>
-#include <time.h>
+#include "despawning.c"
+#include "spawning.c"
 
 int main(void) {
-  srand(time(NULL));
-
-  ecs_World world = ecs_new_world();
+  printf("Running spawning test...\n");
 
   clock_t start = clock();
-
-  for (size_t i = 0; i < 1000; i++) {
-    int x1 = rand();
-    int y1 = rand();
-
-    int x2 = rand();
-    int y2 = rand();
-    int vx2 = rand();
-    int vy2 = rand();
-
-    int x3 = rand();
-    int y3 = rand();
-    int vx3 = rand();
-    int vy3 = rand();
-    int ax3 = rand();
-    int ay3 = rand();
-
-    ecs_spawn(&world, ((A_Pos){
-                          .pos = {.x = x1, .y = y1},
-                      }));
-
-    ecs_spawn(&world, ((A_PosVel){
-                          .pos = {.x = x2, .y = y2},
-                          .vel = {.vx = vx2, .vy = vy2},
-                      }));
-
-    ecs_spawn(&world, ((A_PosVelAcc){
-                          .pos = {.x = x3, .y = y3},
-                          .vel = {.vx = vx3, .vy = vy3},
-                          .acc = {.ax = ax3, .ay = ay3},
-                      }));
-
-    assert(world.position.position[i].x == x1);
-    assert(world.position.position[i].y == y1);
-
-    assert(world.position_velocity.position[i].x == x2);
-    assert(world.position_velocity.position[i].y == y2);
-    assert(world.position_velocity.velocity[i].vx == vx2);
-    assert(world.position_velocity.velocity[i].vy == vy2);
-
-    assert(world.position_velocity_acceleration.position[i].x == x3);
-    assert(world.position_velocity_acceleration.position[i].y == y3);
-    assert(world.position_velocity_acceleration.velocity[i].vx == vx3);
-    assert(world.position_velocity_acceleration.velocity[i].vy == vy3);
-    assert(world.position_velocity_acceleration.acceleration[i].ax == ax3);
-    assert(world.position_velocity_acceleration.acceleration[i].ay == ay3);
-  }
-
+  spawning();
   clock_t end = clock();
-  printf("took: %f seconds", (double)(end - start) / CLOCKS_PER_SEC);
+  printf("took: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 
-  ecs_destroy_world(&world);
+  printf("\nRunning despawning test...\n");
+
+  start = clock();
+  despawning();
+  end = clock();
+  printf("took: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
 
   return 0;
 }
