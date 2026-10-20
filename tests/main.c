@@ -4,19 +4,17 @@
 #include "spawning.c"
 
 int main(void) {
-  printf("Running spawning test...\n");
-
   clock_t start = clock();
   spawning();
   clock_t end = clock();
-  printf("took: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
-
-  printf("\nRunning despawning test...\n");
+  printf("Running spawning test... %f seconds\n",
+         (double)(end - start) / CLOCKS_PER_SEC);
 
   start = clock();
   despawning();
   end = clock();
-  printf("took: %f seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
+  printf("Running despawning test... %f seconds\n",
+         (double)(end - start) / CLOCKS_PER_SEC);
 
   return 0;
 }

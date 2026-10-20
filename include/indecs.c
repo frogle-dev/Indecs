@@ -181,14 +181,25 @@ static const EntityLocation DEAD_LOC = {
     .row = 0, // doesnt matter
 };
 
+static void replace_entities(ecs_World *world, EntityID *entities,
+                             EntityID replaced, size_t cur_row, size_t new_row,
+                             EntityLocation new_loc) {
+  entities[cur_row] = entities[new_row];
+
+  // update the swapped entity's location to point at its new memory location
+  world->entity_locations[entities[cur_row]] = new_loc;
+
+  world->entity_locations[replaced] = DEAD_LOC;
+}
+
 bool ecs_despawn(ecs_World *world, EntityID entity_id) {
   if (entity_id >= world->locs_size)
     return false;
 
   EntityLocation loc = world->entity_locations[entity_id];
 
-  // swap the last entity into the despawning entity's row
-  // and decrement the size of the heap array
+  // replace despawning entity's data with the last entity's data to fill the
+  // hole, then decrement the size of the heap array
   // 123456789
   //    ^
   // 12395678
@@ -200,21 +211,41 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
     size_t last_row_idx = a->size - 1;
 
-    a->entities[loc.row] = a->entities[last_row_idx];
     a->position[loc.row] = a->position[last_row_idx];
 
-    // update the swapped entity's location to point at its new memory location
-    world->entity_locations[a->entities[loc.row]] = loc;
-
-    world->entity_locations[entity_id] = DEAD_LOC;
+    replace_entities(world, a->entities, entity_id, loc.row, last_row_idx, loc);
 
     a->size--;
     break;
 
-  case ECS_ARCHETYPE_POSITION_VELOCITY:
+  case ECS_ARCHETYPE_POSITION_VELOCITY:;
+    Archetype_Position_Velocity *a2 = &world->position_velocity;
+
+    last_row_idx = a2->size - 1;
+
+    a2->position[loc.row] = a2->position[last_row_idx];
+    a2->velocity[loc.row] = a2->velocity[last_row_idx];
+
+    replace_entities(world, a2->entities, entity_id, loc.row, last_row_idx,
+                     loc);
+
+    a2->size--;
     break;
 
-  case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION:
+  case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION:;
+    Archetype_Position_Velocity_Acceleration *a3 =
+        &world->position_velocity_acceleration;
+
+    last_row_idx = a3->size - 1;
+
+    a3->position[loc.row] = a3->position[last_row_idx];
+    a3->velocity[loc.row] = a3->velocity[last_row_idx];
+    a3->acceleration[loc.row] = a3->acceleration[last_row_idx];
+
+    replace_entities(world, a3->entities, entity_id, loc.row, last_row_idx,
+                     loc);
+
+    a3->size--;
     break;
 
   case ECS_ARCHETYPE_NONE:
