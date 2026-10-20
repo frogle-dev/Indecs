@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+void spawning(void);
 void spawning(void) {
   srand(time(NULL));
 

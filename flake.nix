@@ -27,6 +27,7 @@
             llvm
 
             gdb
+            gf
             valgrind
 
             lua5_4

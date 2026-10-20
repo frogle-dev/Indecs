@@ -16,5 +16,5 @@ endif()
 add_compile_options(-Wall -Wextra -Wpedantic -Wmissing-prototypes -fsanitize=address,undefined)
 add_link_options(-fsanitize=address,undefined)
 
-add_executable(Indecs examples/main.c include/indecs.c)
+add_executable(Indecs tests/main.c include/indecs.c)
 target_include_directories(Indecs PRIVATE include)
