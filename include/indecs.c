@@ -272,19 +272,19 @@ MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query) {
 }
 
 bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter) {
-  size_t matched_archetypes = 2;
+  size_t const MATCHED_ARCHETYPES = 2;
 
   // has to be here otherwise archetype_i can increment after the check,
   // effectively bypassing it on some cases
-  if (iter->archetype_i >= matched_archetypes) {
+  if (iter->archetype_i >= MATCHED_ARCHETYPES) {
     return false;
   }
 
-  if (iter->row >= query->size[iter->archetype_i]) {
+  while (iter->row >= query->size[iter->archetype_i]) {
     iter->archetype_i++;
     iter->row = 0;
 
-    if (iter->archetype_i >= matched_archetypes)
+    if (iter->archetype_i >= MATCHED_ARCHETYPES)
       return false;
   }
 
