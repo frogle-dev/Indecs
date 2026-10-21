@@ -101,8 +101,6 @@ typedef struct {
 ///// QUERIES
 
 typedef struct {
-  size_t *sizes[2];
-
   Position *pos;
   Velocity *vel;
 
@@ -112,9 +110,8 @@ typedef struct {
   size_t row;
 } MovementIter;
 
-// will assign to movement query
-MovementIter ecs_query_movement(ecs_World *world);
-
+// zero initialize MovementIter
+//
 // returns: true = iteration continuing, false = iteration finished
 bool ecs_iter_movement(ecs_World const *world, MovementIter *iter);
 

@@ -254,38 +254,37 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
 ///// QUERIES
 
-MovementIter ecs_query_movement(ecs_World *world) {
-  MovementIter iter = {
-      .sizes = {&world->position_velocity.size,
-                &world->position_velocity_acceleration.size},
-  };
-
-  return iter;
-}
-
 bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   size_t const MATCHED_ARCHETYPES = 2;
 
-  if (iter->archetype_i >= MATCHED_ARCHETYPES) {
-    return false;
-  }
-
-  while (iter->row >= *iter->sizes[iter->archetype_i]) {
-    iter->archetype_i++;
-    iter->row = 0;
-
-    if (iter->archetype_i >= MATCHED_ARCHETYPES)
-      return false;
-  }
+  // if (iter->archetype_i >= MATCHED_ARCHETYPES) {
+  //   return false;
+  // }
 
   switch (iter->archetype_i) {
   case 0: { // PosVel
+    while (iter->row >= world->position_velocity.size) {
+      iter->archetype_i++;
+      iter->row = 0;
+
+      if (iter->archetype_i >= MATCHED_ARCHETYPES)
+        return false;
+    }
+
     iter->entity = world->position_velocity.entities[iter->row];
     iter->pos = &world->position_velocity.position[iter->row];
     iter->vel = &world->position_velocity.velocity[iter->row];
     break;
   }
   case 1: { // PosVelAcc
+    while (iter->row >= world->position_velocity_acceleration.size) {
+      iter->archetype_i++;
+      iter->row = 0;
+
+      if (iter->archetype_i >= MATCHED_ARCHETYPES)
+        return false;
+    }
+
     iter->entity = world->position_velocity_acceleration.entities[iter->row];
     iter->pos = &world->position_velocity_acceleration.position[iter->row];
     iter->vel = &world->position_velocity_acceleration.velocity[iter->row];

@@ -7,8 +7,7 @@ void querying(void) {
   ecs_World world = ecs_new_world();
 
   // test that nothing gets iterated in empty world
-  MovementIter iter = ecs_query_movement(&world);
-
+  MovementIter iter = {0};
   while (ecs_iter_movement(&world, &iter)) {
   }
 
@@ -50,16 +49,7 @@ void querying(void) {
                                    .acc = {.ax = 5, .ay = 6}}));
 
   // querying
-  iter = ecs_query_movement(&world);
-
-  assert(*iter.sizes[0] == world.position_velocity.size);
-  assert(*iter.sizes[1] == world.position_velocity_acceleration.size);
-
-  // assert(query.pos[0] == world.position_velocity.position);
-  // assert(query.vel[0] == world.position_velocity.velocity);
-  // assert(query.pos[1] == world.position_velocity_acceleration.position);
-  // assert(query.vel[1] == world.position_velocity_acceleration.velocity);
-
+  iter = (MovementIter){0};
   while (ecs_iter_movement(&world, &iter)) {
     size_t row = world.entity_locations[iter.entity].row;
 
