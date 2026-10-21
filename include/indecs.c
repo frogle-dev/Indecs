@@ -89,11 +89,9 @@ static EntityID add_entity(ecs_World *world, ArchetypeID archetype_id,
 
   const size_t row = (*size) - 1;
 
-  entities[row] = world->next_available_entity_id;
+  entities[row] = world->locs_size;
 
-  EntityID id = world->next_available_entity_id;
-
-  world->next_available_entity_id++;
+  EntityID id = world->locs_size;
 
   add_entity_location(world, archetype_id, id, row);
 
@@ -268,8 +266,6 @@ MovementIter ecs_query_movement(ecs_World *world) {
 bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   size_t const MATCHED_ARCHETYPES = 2;
 
-  // has to be here otherwise archetype_i can increment after the check,
-  // effectively bypassing it on some cases
   if (iter->archetype_i >= MATCHED_ARCHETYPES) {
     return false;
   }

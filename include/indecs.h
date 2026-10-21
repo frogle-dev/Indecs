@@ -88,8 +88,6 @@ typedef struct {
 ///// WORLD
 
 typedef struct {
-  EntityID next_available_entity_id;
-
   Archetype_Position position;
   Archetype_Position_Velocity position_velocity;
   Archetype_Position_Velocity_Acceleration position_velocity_acceleration;
