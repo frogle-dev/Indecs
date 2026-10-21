@@ -3,6 +3,7 @@
 #include "despawning.c"
 #include "querying.c"
 #include "spawning.c"
+#include "stress.c"
 
 int main(void) {
   clock_t start = clock();
@@ -21,6 +22,12 @@ int main(void) {
   querying();
   end = clock();
   printf("Running querying test... %f seconds\n",
+         (double)(end - start) / CLOCKS_PER_SEC);
+
+  start = clock();
+  stress();
+  end = clock();
+  printf("Running stress test... %f seconds\n",
          (double)(end - start) / CLOCKS_PER_SEC);
 
   return 0;
