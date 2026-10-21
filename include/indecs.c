@@ -256,22 +256,16 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
 ///// QUERIES
 
-MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query) {
-  *query = (MovementQuery){
-      .pos = {world->position_velocity.position,
-              world->position_velocity_acceleration.position},
-      .vel = {world->position_velocity.velocity,
-              world->position_velocity_acceleration.velocity},
-      .size = {world->position_velocity.size,
-               world->position_velocity_acceleration.size},
+MovementIter ecs_query_movement(ecs_World *world) {
+  MovementIter iter = {
+      .sizes = {&world->position_velocity.size,
+                &world->position_velocity_acceleration.size},
   };
-
-  MovementIter iter = {0};
 
   return iter;
 }
 
-bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter) {
+bool ecs_iter_movement(ecs_World *world, MovementIter *iter) {
   size_t const MATCHED_ARCHETYPES = 2;
 
   // has to be here otherwise archetype_i can increment after the check,
@@ -280,7 +274,7 @@ bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter) {
     return false;
   }
 
-  while (iter->row >= query->size[iter->archetype_i]) {
+  while (iter->row >= *iter->sizes[iter->archetype_i]) {
     iter->archetype_i++;
     iter->row = 0;
 
@@ -288,8 +282,18 @@ bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter) {
       return false;
   }
 
-  iter->pos = &(query->pos[iter->archetype_i])[iter->row];
-  iter->vel = &(query->vel[iter->archetype_i])[iter->row];
+  switch (iter->archetype_i) {
+  case 0: { // PosVel
+    iter->pos = &world->position_velocity.position[iter->row];
+    iter->vel = &world->position_velocity.velocity[iter->row];
+    break;
+  }
+  case 1: { // PosVelAcc
+    iter->pos = &world->position_velocity_acceleration.position[iter->row];
+    iter->vel = &world->position_velocity_acceleration.velocity[iter->row];
+    break;
+  }
+  }
 
   iter->row++;
 

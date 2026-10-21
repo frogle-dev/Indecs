@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <indecs.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void despawning(void);
 void despawning(void) {
@@ -23,7 +24,8 @@ void despawning(void) {
   assert(world.position.entities[2] == 2);
 
   // checking if swapping worked, 1st element should be id3
-  assert(ecs_despawn(&world, id1));
+  if (!ecs_despawn(&world, id1))
+    exit(EXIT_FAILURE);
 
   assert(world.position.entities[0] == 2);
   assert(world.position.entities[1] == 1);
@@ -35,8 +37,11 @@ void despawning(void) {
   assert(world.position.position[0].y == 6);
 
   // storage should be empty
-  assert(ecs_despawn(&world, id2));
-  assert(ecs_despawn(&world, id3));
+  if (!ecs_despawn(&world, id2))
+    exit(EXIT_FAILURE);
+
+  if (!ecs_despawn(&world, id3))
+    exit(EXIT_FAILURE);
 
   assert(world.entity_locations[id1].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id2].archetype == ECS_ARCHETYPE_NONE);
@@ -66,7 +71,8 @@ void despawning(void) {
                                        .acc = {.ax = 7, .ay = 8},
                                    }));
 
-  assert(ecs_despawn(&world, id1));
+  if (!ecs_despawn(&world, id1))
+    exit(EXIT_FAILURE);
 
   assert(world.entity_locations[id1].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id2].row == 0);
@@ -76,7 +82,8 @@ void despawning(void) {
   assert(world.position_velocity.velocity[0].vx == 3);
   assert(world.position_velocity.velocity[0].vy == 4);
 
-  assert(ecs_despawn(&world, id3));
+  if (!ecs_despawn(&world, id3))
+    exit(EXIT_FAILURE);
 
   assert(world.entity_locations[id3].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id4].row == 0);
