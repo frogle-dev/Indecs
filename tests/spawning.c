@@ -7,7 +7,7 @@
 
 void spawning(void);
 void spawning(void) {
-  srand(time(NULL));
+  srand(123);
 
   ecs_World world = ecs_new_world();
 

@@ -2,13 +2,8 @@
 #include <indecs.h>
 #include <stdio.h>
 
-#include <stdlib.h>
-#include <time.h>
-
 void despawning(void);
 void despawning(void) {
-  srand(time(NULL));
-
   ecs_World world = ecs_new_world();
 
   EntityID id1 = ecs_spawn(&world, ((A_Pos){

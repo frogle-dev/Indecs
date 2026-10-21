@@ -6,6 +6,13 @@ void querying(void);
 void querying(void) {
   ecs_World world = ecs_new_world();
 
+  // test that nothing gets iterated in empty world
+  MovementQuery query;
+  MovementIter iter = ecs_query_movement(&world, &query);
+
+  while (ecs_iter_movement(&query, &iter)) {
+  }
+
   // pos archetypes wont be queried
   ecs_spawn(&world, ((A_Pos){
                         .pos = {.x = 1, .y = 2},
@@ -44,7 +51,7 @@ void querying(void) {
                                    .acc = {.ax = 5, .ay = 6}}));
 
   // querying
-  MovementQuery query = ecs_query_movement(&world);
+  iter = ecs_query_movement(&world, &query);
 
   assert(query.size[0] == world.position_velocity.size);
   assert(query.size[1] == world.position_velocity_acceleration.size);
@@ -53,8 +60,6 @@ void querying(void) {
   assert(query.vel[0] == world.position_velocity.velocity);
   assert(query.pos[1] == world.position_velocity_acceleration.position);
   assert(query.vel[1] == world.position_velocity_acceleration.velocity);
-
-  MovementIter iter = {.first_iter = true};
 
   while (ecs_iter_movement(&query, &iter)) {
     switch (iter.archetype_i) {

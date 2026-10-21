@@ -257,8 +257,8 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
 ///// QUERIES
 
-MovementQuery ecs_query_movement(ecs_World *world) {
-  MovementQuery views = {
+MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query) {
+  *query = (MovementQuery){
       .pos = {world->position_velocity.position,
               world->position_velocity_acceleration.position},
       .vel = {world->position_velocity.velocity,
@@ -267,32 +267,27 @@ MovementQuery ecs_query_movement(ecs_World *world) {
                world->position_velocity_acceleration.size},
   };
 
-  return views;
+  MovementIter iter = {0};
+
+  return iter;
 }
 
 bool ecs_iter_movement(MovementQuery *const query, MovementIter *iter) {
-  if (iter->first_iter == true) {
-    iter->matched_archetypes = sizeof(query->size) / sizeof(query->size[0]);
-    iter->archetype_i = 0;
-    iter->row = 0;
+  size_t matched_archetypes = 2;
 
-    printf("matched arcvhetypes: %zu\n", iter->matched_archetypes);
+  // has to be here otherwise archetype_i can increment after the check,
+  // effectively bypassing it on some cases
+  if (iter->archetype_i >= matched_archetypes) {
+    return false;
   }
-
-  iter->first_iter = false;
 
   if (iter->row >= query->size[iter->archetype_i]) {
     iter->archetype_i++;
     iter->row = 0;
-  }
 
-  // has to be here otherwise archetype_i can increment after the check,
-  // effectively bypassing it on some cases
-  if (iter->archetype_i >= iter->matched_archetypes) {
-    return false;
+    if (iter->archetype_i >= matched_archetypes)
+      return false;
   }
-
-  printf("size: %zu, row: %zu\n", query->size[iter->archetype_i], iter->row);
 
   iter->pos = &(query->pos[iter->archetype_i])[iter->row];
   iter->vel = &(query->vel[iter->archetype_i])[iter->row];

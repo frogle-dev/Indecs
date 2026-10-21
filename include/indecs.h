@@ -103,6 +103,7 @@ typedef struct {
 ///// QUERIES
 
 typedef struct {
+  // the size of the array is the number of matched archetypes
   Position *pos[2];
   Velocity *vel[2];
 
@@ -110,21 +111,16 @@ typedef struct {
 } MovementQuery;
 
 typedef struct {
-  bool first_iter;
-
   Position *pos;
   Velocity *vel;
 
-  size_t matched_archetypes;
   size_t archetype_i;
   size_t row;
 } MovementIter;
 
-MovementQuery ecs_query_movement(ecs_World *world);
+// will assign to movement query
+MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query);
 
-// for the first call of ecs_iter, pass in a MovementIter struct with
-// "first_iter" field set to true
-//
 // returns: true = iteration continuing, false = iteration finished
 bool ecs_iter_movement(MovementQuery *const query, MovementIter *iter);
 
