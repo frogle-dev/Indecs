@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "despawning.c"
+#include "querying.c"
 #include "spawning.c"
 
 int main(void) {
@@ -14,6 +15,12 @@ int main(void) {
   despawning();
   end = clock();
   printf("Running despawning test... %f seconds\n",
+         (double)(end - start) / CLOCKS_PER_SEC);
+
+  start = clock();
+  querying();
+  end = clock();
+  printf("Running querying test... %f seconds\n",
          (double)(end - start) / CLOCKS_PER_SEC);
 
   return 0;

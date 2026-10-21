@@ -100,6 +100,34 @@ typedef struct {
   EntityLocation *entity_locations;
 } ecs_World;
 
+///// QUERIES
+
+typedef struct {
+  Position *pos[2];
+  Velocity *vel[2];
+
+  size_t size[2];
+} MovementQuery;
+
+typedef struct {
+  bool first_iter;
+
+  Position *pos;
+  Velocity *vel;
+
+  size_t matched_archetypes;
+  size_t archetype_i;
+  size_t row;
+} MovementIter;
+
+MovementQuery ecs_query_movement(ecs_World *world);
+
+// for the first call of ecs_iter, pass in a MovementIter struct with
+// "first_iter" field set to true
+//
+// returns: true = iteration continuing, false = iteration finished
+bool ecs_iter_movement(MovementQuery *const query, MovementIter *iter);
+
 ///// FUNCTIONS
 
 ecs_World ecs_new_world(void);
