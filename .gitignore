@@ -1,5 +1,8 @@
 .cache/
 
+.clang-tidy
+.clang-format
+
 # Prerequisites
 *.d
 
