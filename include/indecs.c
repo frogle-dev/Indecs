@@ -265,7 +265,7 @@ MovementIter ecs_query_movement(ecs_World *world) {
   return iter;
 }
 
-bool ecs_iter_movement(ecs_World *world, MovementIter *iter) {
+bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   size_t const MATCHED_ARCHETYPES = 2;
 
   // has to be here otherwise archetype_i can increment after the check,
@@ -284,11 +284,13 @@ bool ecs_iter_movement(ecs_World *world, MovementIter *iter) {
 
   switch (iter->archetype_i) {
   case 0: { // PosVel
+    iter->entity = world->position_velocity.entities[iter->row];
     iter->pos = &world->position_velocity.position[iter->row];
     iter->vel = &world->position_velocity.velocity[iter->row];
     break;
   }
   case 1: { // PosVelAcc
+    iter->entity = world->position_velocity_acceleration.entities[iter->row];
     iter->pos = &world->position_velocity_acceleration.position[iter->row];
     iter->vel = &world->position_velocity_acceleration.velocity[iter->row];
     break;

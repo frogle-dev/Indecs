@@ -108,6 +108,8 @@ typedef struct {
   Position *pos;
   Velocity *vel;
 
+  EntityID entity;
+
   size_t archetype_i;
   size_t row;
 } MovementIter;
@@ -116,7 +118,7 @@ typedef struct {
 MovementIter ecs_query_movement(ecs_World *world);
 
 // returns: true = iteration continuing, false = iteration finished
-bool ecs_iter_movement(ecs_World *world, MovementIter *iter);
+bool ecs_iter_movement(ecs_World const *world, MovementIter *iter);
 
 ///// FUNCTIONS
 

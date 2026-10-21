@@ -61,22 +61,24 @@ void querying(void) {
   // assert(query.vel[1] == world.position_velocity_acceleration.velocity);
 
   while (ecs_iter_movement(&world, &iter)) {
+    size_t row = world.entity_locations[iter.entity].row;
+
     switch (iter.archetype_i) {
     case 0:
-      assert(iter.pos->x == world.position_velocity.position[iter.row - 1].x);
-      assert(iter.pos->y == world.position_velocity.position[iter.row - 1].y);
-      assert(iter.vel->vx == world.position_velocity.velocity[iter.row - 1].vx);
-      assert(iter.vel->vy == world.position_velocity.velocity[iter.row - 1].vy);
+      assert(iter.pos->x == world.position_velocity.position[row].x);
+      assert(iter.pos->y == world.position_velocity.position[row].y);
+      assert(iter.vel->vx == world.position_velocity.velocity[row].vx);
+      assert(iter.vel->vy == world.position_velocity.velocity[row].vy);
       break;
     case 1:
       assert(iter.pos->x ==
-             world.position_velocity_acceleration.position[iter.row - 1].x);
+             world.position_velocity_acceleration.position[row].x);
       assert(iter.pos->y ==
-             world.position_velocity_acceleration.position[iter.row - 1].y);
+             world.position_velocity_acceleration.position[row].y);
       assert(iter.vel->vx ==
-             world.position_velocity_acceleration.velocity[iter.row - 1].vx);
+             world.position_velocity_acceleration.velocity[row].vx);
       assert(iter.vel->vy ==
-             world.position_velocity_acceleration.velocity[iter.row - 1].vy);
+             world.position_velocity_acceleration.velocity[row].vy);
       break;
     };
   }
