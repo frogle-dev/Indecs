@@ -206,7 +206,7 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
   //    ^    x
 
   switch (loc.archetype) {
-  case ECS_ARCHETYPE_POSITION:;
+  case ECS_ARCHETYPE_POSITION: {
     Archetype_Position *a = &world->position;
 
     size_t last_row_idx = a->size - 1;
@@ -217,39 +217,38 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
     a->size--;
     break;
+  }
+  case ECS_ARCHETYPE_POSITION_VELOCITY: {
+    Archetype_Position_Velocity *a = &world->position_velocity;
 
-  case ECS_ARCHETYPE_POSITION_VELOCITY:;
-    Archetype_Position_Velocity *a2 = &world->position_velocity;
+    size_t last_row_idx = a->size - 1;
 
-    last_row_idx = a2->size - 1;
+    a->position[loc.row] = a->position[last_row_idx];
+    a->velocity[loc.row] = a->velocity[last_row_idx];
 
-    a2->position[loc.row] = a2->position[last_row_idx];
-    a2->velocity[loc.row] = a2->velocity[last_row_idx];
+    replace_entities(world, a->entities, entity_id, loc.row, last_row_idx, loc);
 
-    replace_entities(world, a2->entities, entity_id, loc.row, last_row_idx,
-                     loc);
-
-    a2->size--;
+    a->size--;
     break;
-
-  case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION:;
-    Archetype_Position_Velocity_Acceleration *a3 =
+  }
+  case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION: {
+    Archetype_Position_Velocity_Acceleration *a =
         &world->position_velocity_acceleration;
 
-    last_row_idx = a3->size - 1;
+    size_t last_row_idx = a->size - 1;
 
-    a3->position[loc.row] = a3->position[last_row_idx];
-    a3->velocity[loc.row] = a3->velocity[last_row_idx];
-    a3->acceleration[loc.row] = a3->acceleration[last_row_idx];
+    a->position[loc.row] = a->position[last_row_idx];
+    a->velocity[loc.row] = a->velocity[last_row_idx];
+    a->acceleration[loc.row] = a->acceleration[last_row_idx];
 
-    replace_entities(world, a3->entities, entity_id, loc.row, last_row_idx,
-                     loc);
+    replace_entities(world, a->entities, entity_id, loc.row, last_row_idx, loc);
 
-    a3->size--;
+    a->size--;
     break;
-
-  case ECS_ARCHETYPE_NONE:
+  }
+  case ECS_ARCHETYPE_NONE: {
     return false;
+  }
   };
 
   return true;
@@ -272,7 +271,7 @@ MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query) {
   return iter;
 }
 
-bool ecs_iter_movement(MovementQuery *const query, MovementIter *iter) {
+bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter) {
   size_t matched_archetypes = 2;
 
   // has to be here otherwise archetype_i can increment after the check,

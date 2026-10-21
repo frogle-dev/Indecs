@@ -122,7 +122,7 @@ typedef struct {
 MovementIter ecs_query_movement(ecs_World *world, MovementQuery *query);
 
 // returns: true = iteration continuing, false = iteration finished
-bool ecs_iter_movement(MovementQuery *const query, MovementIter *iter);
+bool ecs_iter_movement(MovementQuery const *query, MovementIter *iter);
 
 ///// FUNCTIONS
 

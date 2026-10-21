@@ -23,7 +23,7 @@ void despawning(void) {
   assert(world.position.entities[2] == 2);
 
   // checking if swapping worked, 1st element should be id3
-  ecs_despawn(&world, id1);
+  assert(ecs_despawn(&world, id1));
 
   assert(world.position.entities[0] == 2);
   assert(world.position.entities[1] == 1);
@@ -35,8 +35,8 @@ void despawning(void) {
   assert(world.position.position[0].y == 6);
 
   // storage should be empty
-  ecs_despawn(&world, id2);
-  ecs_despawn(&world, id3);
+  assert(ecs_despawn(&world, id2));
+  assert(ecs_despawn(&world, id3));
 
   assert(world.entity_locations[id1].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id2].archetype == ECS_ARCHETYPE_NONE);
@@ -66,7 +66,7 @@ void despawning(void) {
                                        .acc = {.ax = 7, .ay = 8},
                                    }));
 
-  ecs_despawn(&world, id1);
+  assert(ecs_despawn(&world, id1));
 
   assert(world.entity_locations[id1].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id2].row == 0);
@@ -76,7 +76,7 @@ void despawning(void) {
   assert(world.position_velocity.velocity[0].vx == 3);
   assert(world.position_velocity.velocity[0].vy == 4);
 
-  ecs_despawn(&world, id3);
+  assert(ecs_despawn(&world, id3));
 
   assert(world.entity_locations[id3].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id4].row == 0);
@@ -87,6 +87,9 @@ void despawning(void) {
   assert(world.position_velocity_acceleration.velocity[0].vy == 8);
   assert(world.position_velocity_acceleration.acceleration[0].ax == 7);
   assert(world.position_velocity_acceleration.acceleration[0].ay == 8);
+
+  assert(!ecs_despawn(&world, id3));
+  assert(!ecs_despawn(&world, 100));
 
   ecs_destroy_world(&world);
 }
