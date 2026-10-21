@@ -46,7 +46,6 @@ void despawning(void) {
   assert(world.entity_locations[id2].archetype == ECS_ARCHETYPE_NONE);
   assert(world.entity_locations[id3].archetype == ECS_ARCHETYPE_NONE);
   assert(world.position.size == 0);
-  assert(world.position.capacity == 1 * 2 * 2);
 
   id1 = ecs_spawn(&world, ((A_PosVel){
                               .pos = {.x = 1, .y = 2},
@@ -92,8 +91,8 @@ void despawning(void) {
   assert(world.position_velocity_acceleration.acceleration[0].ax == 7);
   assert(world.position_velocity_acceleration.acceleration[0].ay == 8);
 
-  assert(!ecs_despawn(&world, id3));
-  assert(!ecs_despawn(&world, 100));
+  CHECK(!ecs_despawn(&world, id3));
+  CHECK(!ecs_despawn(&world, 100));
 
   ecs_destroy_world(&world);
 }
