@@ -13,7 +13,12 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-add_compile_options(-Wall -Wextra -Wpedantic -Wmissing-prototypes -fsanitize=address,undefined)
+add_compile_options(
+    -Wall -Wextra -Wpedantic
+    -Wmissing-prototypes -Wstrict-prototypes
+    -Wconversion -Wdouble-promotion
+    -Wformat=2 -Wshadow
+    -fsanitize=address,undefined)
 add_link_options(-fsanitize=address,undefined)
 
 add_executable(Indecs tests/main.c include/indecs.c)

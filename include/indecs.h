@@ -106,6 +106,8 @@ typedef struct {
 
   EntityID entity;
 
+  size_t iterations;
+
   size_t archetype_i;
   size_t row;
 } MovementIter;
@@ -135,3 +137,7 @@ ecs_archetype_position_velocity_acceleration_spawn(ecs_World *world,
       world, Archetype)
 
 bool ecs_despawn(ecs_World *world, EntityID entity_id);
+
+///// VALIDATION
+
+bool ecs_validate(ecs_World const *world);

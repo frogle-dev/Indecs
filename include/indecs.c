@@ -1,5 +1,6 @@
 #include <indecs.h>
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -58,7 +59,7 @@ static void add_entity_location(ecs_World *world, ArchetypeID archetype_id,
     if (world->locs_capacity == 0)
       new_cap = 1;
     else
-      new_cap = (world->locs_capacity) * 2;
+      new_cap = world->locs_capacity * 2;
 
     world->locs_capacity = new_cap;
 
@@ -89,9 +90,9 @@ static EntityID add_entity(ecs_World *world, ArchetypeID archetype_id,
 
   const size_t row = (*size) - 1;
 
-  entities[row] = world->locs_size;
+  entities[row] = (EntityID)world->locs_size;
 
-  EntityID id = world->locs_size;
+  EntityID id = (EntityID)world->locs_size;
 
   add_entity_location(world, archetype_id, id, row);
 
@@ -254,6 +255,22 @@ bool ecs_despawn(ecs_World *world, EntityID entity_id) {
 
 ///// QUERIES
 
+static size_t choose_archetype_size(ecs_World const *world,
+                                    MovementIter *iter) {
+  switch (iter->archetype_i) {
+  case 0: {
+    return world->position_velocity.size;
+    break;
+  }
+  case 1: {
+    return world->position_velocity_acceleration.size;
+    break;
+  }
+  }
+
+  return 0;
+}
+
 bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   size_t const MATCHED_ARCHETYPES = 2;
 
@@ -261,30 +278,26 @@ bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   //   return false;
   // }
 
+  size_t cur_size = choose_archetype_size(world, iter);
+
+  while (iter->row >= cur_size) {
+    iter->archetype_i++;
+    iter->row = 0;
+
+    cur_size = choose_archetype_size(world, iter);
+
+    if (iter->archetype_i >= MATCHED_ARCHETYPES)
+      return false;
+  }
+
   switch (iter->archetype_i) {
   case 0: { // PosVel
-    while (iter->row >= world->position_velocity.size) {
-      iter->archetype_i++;
-      iter->row = 0;
-
-      if (iter->archetype_i >= MATCHED_ARCHETYPES)
-        return false;
-    }
-
     iter->entity = world->position_velocity.entities[iter->row];
     iter->pos = &world->position_velocity.position[iter->row];
     iter->vel = &world->position_velocity.velocity[iter->row];
     break;
   }
   case 1: { // PosVelAcc
-    while (iter->row >= world->position_velocity_acceleration.size) {
-      iter->archetype_i++;
-      iter->row = 0;
-
-      if (iter->archetype_i >= MATCHED_ARCHETYPES)
-        return false;
-    }
-
     iter->entity = world->position_velocity_acceleration.entities[iter->row];
     iter->pos = &world->position_velocity_acceleration.position[iter->row];
     iter->vel = &world->position_velocity_acceleration.velocity[iter->row];
@@ -293,6 +306,106 @@ bool ecs_iter_movement(ecs_World const *world, MovementIter *iter) {
   }
 
   iter->row++;
+  iter->iterations++;
+
+  return true;
+}
+
+static bool validate_archetype(ecs_World const *world, ArchetypeID archetype,
+                               EntityID const *entities, size_t size,
+                               size_t capacity) {
+  if (size > capacity) {
+    fprintf(stderr, "validate: archetype %d: size %zu > capacity %zu\n",
+            (int)archetype, size, capacity);
+    return false;
+  }
+
+  if (capacity > 0 && entities == NULL) {
+    fprintf(stderr, "validate: archetype %d: capacity %zu but no entities\n",
+            (int)archetype, capacity);
+    return false;
+  }
+
+  for (size_t row = 0; row < size; row++) {
+    EntityID id = entities[row];
+
+    if (id >= world->locs_size) {
+      fprintf(stderr,
+              "validate: archetype %d row %zu: entity %u was never issued\n",
+              (int)archetype, row, (unsigned)id);
+      return false;
+    }
+
+    EntityLocation loc = world->entity_locations[id];
+
+    if (loc.archetype != archetype || loc.row != row) {
+      fprintf(
+          stderr,
+          "validate: archetype %d row %zu holds entity %u, but its location "
+          "says archetype %d row %zu\n",
+          (int)archetype, row, (unsigned)id, (int)loc.archetype, loc.row);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool ecs_validate(ecs_World const *world) {
+  if (world->locs_size > world->locs_capacity) {
+    fprintf(stderr, "validate: locs_size %zu > locs_capacity %zu\n",
+            world->locs_size, world->locs_capacity);
+    return false;
+  }
+
+  if (!validate_archetype(world, ECS_ARCHETYPE_POSITION,
+                          world->position.entities, world->position.size,
+                          world->position.capacity))
+    return false;
+
+  if (!validate_archetype(world, ECS_ARCHETYPE_POSITION_VELOCITY,
+                          world->position_velocity.entities,
+                          world->position_velocity.size,
+                          world->position_velocity.capacity))
+    return false;
+
+  if (!validate_archetype(world, ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION,
+                          world->position_velocity_acceleration.entities,
+                          world->position_velocity_acceleration.size,
+                          world->position_velocity_acceleration.capacity))
+    return false;
+
+  for (EntityID id = 0; id < world->locs_size; id++) {
+    EntityLocation loc = world->entity_locations[id];
+
+    EntityID const *entities = NULL;
+    size_t size = 0;
+
+    switch (loc.archetype) {
+    case ECS_ARCHETYPE_NONE:
+      continue;
+    case ECS_ARCHETYPE_POSITION:
+      entities = world->position.entities;
+      size = world->position.size;
+      break;
+    case ECS_ARCHETYPE_POSITION_VELOCITY:
+      entities = world->position_velocity.entities;
+      size = world->position_velocity.size;
+      break;
+    case ECS_ARCHETYPE_POSITION_VELOCITY_ACCELERATION:
+      entities = world->position_velocity_acceleration.entities;
+      size = world->position_velocity_acceleration.size;
+      break;
+    }
+
+    if (loc.row >= size || entities[loc.row] != id) {
+      fprintf(stderr,
+              "validate: entity %u says archetype %d row %zu, but that row is "
+              "out of range or holds a different entity\n",
+              (unsigned)id, (int)loc.archetype, loc.row);
+      return false;
+    }
+  }
 
   return true;
 }
