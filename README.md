@@ -1,2 +1,2 @@
 # Indecs (WIP)
-Tiny but mighty compile time archetype ECS made in C
+Compile time archetype ECS made in C
