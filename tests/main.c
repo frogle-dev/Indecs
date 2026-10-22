@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "despawning.c"
+#include "physics_sim.c"
 #include "querying.c"
 #include "spawning.c"
 #include "stress.c"
@@ -29,6 +30,8 @@ int main(void) {
   end = clock();
   printf("Running stress test... %f seconds\n",
          (double)(end - start) / CLOCKS_PER_SEC);
+
+  physics_sim();
 
   return 0;
 }
